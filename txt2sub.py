@@ -20,6 +20,7 @@ import argparse
 import os
 import re
 import speech_recognition as sr
+from tqdm import tqdm  # Importing tqdm library for progress bar
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(description="A speech-to-text program that generates subtitle files from a lyrics text file and an audio file.")
@@ -50,7 +51,7 @@ text = r.recognize_google(audio)
 # Match the text to the lyrics strings
 lyric_idx = 0
 captions = []
-for word in text.split():
+for word in tqdm(text.split()):  # Wrapping for-loop with tqdm
     if word.lower() == lyrics[lyric_idx].split()[0].lower():
         start = 0  # Start time of the caption (in seconds)
         end = 0  # End time of the caption (in seconds)
