@@ -1,3 +1,4 @@
+"""
 #########################################################
 #     __           __  ________              ___        #
 #   _/  |____  ___/  |_\_____  \  ________ __\_ |__     #
@@ -7,11 +8,28 @@
 #               \/             \/    \/           \/    #
 #########################################################
 
+txt2sub - A speech-to-text program that generates subtitle files from a lyrics text file and an audio file.
+Usage: txt2sub.py -i <lyrics_text_file> -a <audio_file> -o <captions_text_file>
+
+Arguments:
+-i/--input:  Path to the lyrics text file (required)
+-a/--audio:  Path to the audio file (required)
+-o/--output: Path to the output captions text file (required)
+"""
+import argparse
+import os
 import re
 import speech_recognition as sr
 
-# Parse the lyrics text file
-with open('lyrics.txt') as f:
+# Parse command line arguments
+parser = argparse.ArgumentParser(description="A speech-to-text program that generates subtitle files from a lyrics text file and an audio file.")
+parser.add_argument("-i", "--input", type=str, required=True, help="Path to the lyrics text file")
+parser.add_argument("-a", "--audio", type=str, required=True, help="Path to the audio file")
+parser.add_argument("-o", "--output", type=str, required=True, help="Path to the output captions text file")
+args = parser.parse_args()
+
+# Load the lyrics text file
+with open(args.input) as f:
     lines = f.readlines()
 
 lyrics = []
@@ -23,7 +41,7 @@ for line in lines:
 
 # Load the audio file
 r = sr.Recognizer()
-with sr.AudioFile('audio.wav') as source:
+with sr.AudioFile(args.audio) as source:
     audio = r.record(source)
 
 # Transcribe the audio
@@ -46,5 +64,5 @@ for word in text.split():
                 break
 
 # Write the captions to a file
-with open('captions.txt', 'w') as f:
+with open(args.output, 'w') as f:
     f.writelines(captions)
